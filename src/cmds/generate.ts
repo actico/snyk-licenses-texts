@@ -40,7 +40,7 @@ export const builder = {
   outputFormat: {
     default: OutputFormat.HTML,
     desc: 'Report format',
-    choices: [OutputFormat.HTML],
+    choices: [OutputFormat.HTML, OutputFormat.PDF],
   },
   excludeSnykFields: {
     desc:
@@ -70,6 +70,7 @@ export async function handler(argv: GenerateOptions) {
       view,
       project,
       excludeSnykFields = false,
+      excludeForbiddenLicenses = false,
     } = argv;
     debug(
       'ℹ️  Options: ' +
@@ -79,6 +80,7 @@ export async function handler(argv: GenerateOptions) {
           template,
           view,
           project: _.castArray(project),
+          excludeForbiddenLicenses,
         }),
     );
     getApiToken();
@@ -101,6 +103,7 @@ export async function handler(argv: GenerateOptions) {
       undefined,
       {
         excludeSnykFields,
+        excludeForbiddenLicenses,
       },
     );
     const generateReportFunc = outputHandlers[outputFormat];
@@ -124,9 +127,10 @@ interface GenerateOptions {
   view: SupportedViews;
   project?: string | string[];
   excludeSnykFields?: boolean;
+  excludeForbiddenLicenses?: boolean;
 }
 function validateOptions(argv: GenerateOptions) {
-  const { view, excludeSnykFields = false } = argv;
+  const { view, excludeSnykFields = false} = argv;
   if (excludeSnykFields && view === SupportedViews.PROJECT_DEPENDENCIES) {
     throw new Error(
       `--excludeSnykFields is not supported with with ${SupportedViews.PROJECT_DEPENDENCIES} view as Snyk project information is required`,
