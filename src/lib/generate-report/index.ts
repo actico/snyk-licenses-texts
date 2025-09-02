@@ -24,9 +24,11 @@ export async function generateHtmlReport(
   view: SupportedViews = SupportedViews.ORG_LICENSES,
   reportDate = new Date().toLocaleDateString(),
   options: {
-    excludeSnykFields: boolean;
+    excludeSnykFields: boolean,
+    excludeForbiddenLicenses: boolean;
   } = {
     excludeSnykFields: false,
+    excludeForbiddenLicenses: false,
   },
 ): Promise<string> {
   debug('ℹ️  Generating HTML report');
@@ -55,24 +57,39 @@ function transformDataForLicenseView(
   orgData: OrgData,
   reportDate: string,
   options: {
-    excludeSnykFields: boolean;
+    excludeSnykFields: boolean,
+    excludeForbiddenLicenses: boolean;
   } = {
     excludeSnykFields: false,
+    excludeForbiddenLicenses: false,
   },
 ): {
+  reportGenerationDate: string;
   licenses: LicenseReportData;
   orgPublicId: string;
   orgData: OrgData;
   includeSnykFields: boolean;
-  reportGenerationDate: string;
 } {
   return {
     reportGenerationDate: reportDate,
-    licenses: data,
+    licenses: filterLicenseData(options.excludeForbiddenLicenses, data),
     orgPublicId,
     orgData,
     includeSnykFields: !options.excludeSnykFields,
   };
+}
+
+function filterLicenseData(excludeForbiddenLicenses: boolean, licenseData: LicenseReportData): LicenseReportData {
+  if (!excludeForbiddenLicenses) {
+    return licenseData;
+  }
+  const filteredData: LicenseReportData = {};
+  for (const [licenseId, licenseInfo] of Object.entries(licenseData)) {
+    if (licenseInfo.severity === 'none') {
+      filteredData[licenseId] = licenseInfo;
+    }
+  }
+  return filteredData;
 }
 
 interface ProjectsReportData {
