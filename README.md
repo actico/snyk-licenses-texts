@@ -59,3 +59,10 @@ Example usage:
 - `npm i`
 - `npm run test` (requires `TEST_ORG_ID` & `SNYK_TEST_TOKEN` from 1 password)
 - `DEBUG=snyk-license* node dist/index.js generate --orgPublicId=<ORG_PUBLIC_ID>`
+
+# ACTICO Additions
+- introduce new parameter `excludeForbiddenLicenses` to filter all licenses and their texts from the report
+  - a license is forbidden if `severity` is not `none`
+
+## Package app
+- Run `npm run package` to create a new binary.

@@ -46,6 +46,10 @@ export const builder = {
     desc:
       'Choose to exclude Snyk information. Excluded information: organization name, organization links, license severities in Snyk, license instructions, Snyk project information.',
   },
+  excludeForbiddenLicenses: {
+    desc:
+      'Choose to exclude forbidden licenses from the report, defined as licenses with severities other then "none"',
+  },
   view: {
     choices: [SupportedViews.ORG_LICENSES, SupportedViews.PROJECT_DEPENDENCIES],
     default: SupportedViews.ORG_LICENSES,
