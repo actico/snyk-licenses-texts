@@ -1,5 +1,5 @@
 {
-  "name": "snyk-licenses-texts",
+  "name": "actico-snyk-licenses-texts",
   "description": "Snyk Licenses Texts",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,8 @@
     "build-watch": "tsc -w && npm run copy:templates",
     "prepare": "npm run build",
     "snyk-test": "snyk test",
-    "copy:templates": "cpx 'src/**/*.{hbs,html}' ./dist"
+    "copy:templates": "cpx 'src/**/*.{hbs,html}' ./dist",
+    "package": "pkg . -t node18-macos-arm64,node18-linux-x64,node18-win-x64 --compress GZip"
   },
   "bin": {
     "snyk-licenses-report": "dist/index.js"
@@ -73,9 +74,6 @@
   "pkg": {
     "scripts": [
       "dist/**/**/*.js"
-    ],
-    "targets": [
-      "node10"
     ],
     "assets": [
       "dist/lib/**/**/*.hbs",
